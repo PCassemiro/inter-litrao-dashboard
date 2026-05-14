@@ -1,16 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;
-  --foreground: #e2e8f0;
-  --card-bg: #1e293b;
-  --card-border: #334155;
-  --emerald: #10b981;
-  --emerald-light: #34d399;
-  --emerald-dark: #059669;
-  --muted: #94a3b8;
-  --danger: #ef4444;
-  --warning: #eab308;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --sidebar-bg: #312e81;
+  --sidebar-active: #4338ca;
+  --sidebar-text: #c7d2fe;
+  --sidebar-text-active: #ffffff;
+  --muted: #64748b;
+  --muted-light: #94a3b8;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --accent-orange: #f97316;
+  --accent-yellow: #eab308;
+  --accent-red: #ef4444;
+  --gold: #f59e0b;
+  --silver: #9ca3af;
+  --bronze: #b45309;
 }
 
 @theme inline {
@@ -18,12 +27,21 @@
   --color-foreground: var(--foreground);
   --color-card-bg: var(--card-bg);
   --color-card-border: var(--card-border);
-  --color-emerald: var(--emerald);
-  --color-emerald-light: var(--emerald-light);
-  --color-emerald-dark: var(--emerald-dark);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-text: var(--sidebar-text);
+  --color-sidebar-text-active: var(--sidebar-text-active);
   --color-muted: var(--muted);
-  --color-danger: var(--danger);
-  --color-warning: var(--warning);
+  --color-muted-light: var(--muted-light);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-green: var(--accent-green);
+  --color-accent-purple: var(--accent-purple);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-red: var(--accent-red);
+  --color-gold: var(--gold);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -34,10 +52,10 @@ body {
 }
 
 .recharts-cartesian-axis-tick-value {
-  fill: #94a3b8 !important;
+  fill: #64748b !important;
   font-size: 11px;
 }
 
 .recharts-cartesian-grid line {
-  stroke: #334155;
+  stroke: #e2e8f0;
 }

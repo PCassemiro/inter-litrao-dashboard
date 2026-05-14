@@ -1,38 +1,50 @@
-import { players, type Player } from "@/src/constants/mockData";
+import { players } from "@/src/constants/mockData";
 
-type PlayerWithGA = Player & { golsAssistencias: number };
-
-export function getGoalsAndAssists(): PlayerWithGA[] {
-  return players
-    .map((p) => ({ ...p, golsAssistencias: p.gols + p.assistencias }))
-    .filter((p) => p.golsAssistencias > 0)
-    .sort((a, b) => b.golsAssistencias - a.golsAssistencias);
+export function getTopScorers(limit = 5) {
+  return [...players]
+    .sort((a, b) => b.gols - a.gols)
+    .slice(0, limit);
 }
 
-export function getTopScorers() {
-  return players
-    .filter((p) => p.gols > 0)
-    .sort((a, b) => b.gols - a.gols);
+export function getTopAssisters(limit = 5) {
+  return [...players]
+    .sort((a, b) => b.assistencias - a.assistencias)
+    .slice(0, limit);
 }
 
-export function getTopAssisters() {
-  return players
-    .filter((p) => p.assistencias > 0)
-    .sort((a, b) => b.assistencias - a.assistencias);
+export function getAllPlayersSorted() {
+  return [...players]
+    .sort((a, b) => (b.gols + b.assistencias) - (a.gols + a.assistencias));
 }
 
-export function getYellowCards() {
-  return players
-    .filter((p) => p.cartoesAmarelos > 0)
-    .sort((a, b) => b.cartoesAmarelos - a.cartoesAmarelos);
+export function getTotalGols() {
+  return players.reduce((sum, p) => sum + p.gols, 0);
 }
 
-export function getRedCards() {
-  return players
-    .filter((p) => p.cartoesVermelhos > 0)
-    .sort((a, b) => b.cartoesVermelhos - a.cartoesVermelhos);
+export function getTotalAssistencias() {
+  return players.reduce((sum, p) => sum + p.assistencias, 0);
 }
 
-export function getPlayersByGames() {
-  return [...players].sort((a, b) => a.nome.localeCompare(b.nome));
+export function getTotalAmarelos() {
+  return players.reduce((sum, p) => sum + p.cartoesAmarelos, 0);
+}
+
+export function getTotalVermelhos() {
+  return players.reduce((sum, p) => sum + p.cartoesVermelhos, 0);
+}
+
+export function getJogadoresAtivos() {
+  return players.length;
+}
+
+export function getMaxJogos() {
+  return Math.max(...players.map((p) => p.jogos));
+}
+
+export function getArtilheiro() {
+  return [...players].sort((a, b) => b.gols - a.gols)[0];
+}
+
+export function getGarcom() {
+  return [...players].sort((a, b) => b.assistencias - a.assistencias)[0];
 }
