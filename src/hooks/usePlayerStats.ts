@@ -1,50 +1,50 @@
-import { players } from "@/src/constants/mockData";
+import type { Player } from "@/src/constants/mockData";
 
-export function getTopScorers(limit = 5) {
+export function getTopScorers(players: Player[], limit = 5) {
   return [...players]
     .sort((a, b) => b.gols - a.gols)
     .slice(0, limit);
 }
 
-export function getTopAssisters(limit = 5) {
+export function getTopAssisters(players: Player[], limit = 5) {
   return [...players]
     .sort((a, b) => b.assistencias - a.assistencias)
     .slice(0, limit);
 }
 
-export function getAllPlayersSorted() {
+export function getAllPlayersSorted(players: Player[]) {
   return [...players]
     .sort((a, b) => (b.gols + b.assistencias) - (a.gols + a.assistencias));
 }
 
-export function getTotalGols() {
+export function getTotalGols(players: Player[]) {
   return players.reduce((sum, p) => sum + p.gols, 0);
 }
 
-export function getTotalAssistencias() {
+export function getTotalAssistencias(players: Player[]) {
   return players.reduce((sum, p) => sum + p.assistencias, 0);
 }
 
-export function getTotalAmarelos() {
+export function getTotalAmarelos(players: Player[]) {
   return players.reduce((sum, p) => sum + p.cartoesAmarelos, 0);
 }
 
-export function getTotalVermelhos() {
+export function getTotalVermelhos(players: Player[]) {
   return players.reduce((sum, p) => sum + p.cartoesVermelhos, 0);
 }
 
-export function getJogadoresAtivos() {
+export function getJogadoresAtivos(players: Player[]) {
   return players.length;
 }
 
-export function getMaxJogos() {
-  return Math.max(...players.map((p) => p.jogos));
+export function getMaxJogos(players: Player[]) {
+  return Math.max(...players.map((p) => p.jogos), 1);
 }
 
-export function getArtilheiro() {
+export function getArtilheiro(players: Player[]) {
   return [...players].sort((a, b) => b.gols - a.gols)[0];
 }
 
-export function getGarcom() {
+export function getGarcom(players: Player[]) {
   return [...players].sort((a, b) => b.assistencias - a.assistencias)[0];
 }

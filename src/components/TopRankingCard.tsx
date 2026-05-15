@@ -38,7 +38,7 @@ export function TopRankingCard({
                 <p className="text-sm font-medium text-foreground truncate">
                   {player.nome}
                 </p>
-                <p className="text-xs text-muted">{player.posicao}</p>
+                <p className="text-xs text-muted">{player.jogos} jogos</p>
               </div>
               <span className="text-sm font-semibold text-foreground tabular-nums">
                 {player[valueKey]} {valueSuffix}

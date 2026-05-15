@@ -210,7 +210,7 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                       <p className="font-medium text-foreground">
                         {player.nome}
                       </p>
-                      <p className="text-xs text-muted">{player.posicao}</p>
+                      <p className="text-xs text-muted">{player.jogos} jogos</p>
                     </div>
                   </div>
                 </td>

@@ -1,5 +1,6 @@
 import { Goal, Handshake, Users, CreditCard } from "lucide-react";
 import { monthlyData } from "@/src/constants/mockData";
+import { fetchPlayersFromSheet } from "@/src/lib/sheets";
 import {
   getTopScorers,
   getTopAssisters,
@@ -21,15 +22,34 @@ import { PlayerStatsTable } from "@/src/components/PlayerStatsTable";
 import { PerformanceGoalChart } from "@/src/components/PerformanceGoalChart";
 import { GoalsReportChart } from "@/src/components/GoalsReportChart";
 
-export default function Home() {
-  const totalGols = getTotalGols();
-  const totalAssists = getTotalAssistencias();
-  const totalAmarelos = getTotalAmarelos();
-  const totalVermelhos = getTotalVermelhos();
-  const jogadoresAtivos = getJogadoresAtivos();
-  const maxJogos = getMaxJogos();
-  const artilheiro = getArtilheiro();
-  const garcom = getGarcom();
+export const revalidate = 60;
+
+export default async function Home() {
+  const players = await fetchPlayersFromSheet();
+
+  if (players.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="rounded-xl border border-card-border bg-card-bg p-8 text-center shadow-sm">
+          <h2 className="text-lg font-semibold text-foreground">
+            Não foi possível carregar os dados
+          </h2>
+          <p className="mt-2 text-sm text-muted">
+            Verifique se a planilha está compartilhada como &quot;qualquer pessoa com o link&quot;.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const totalGols = getTotalGols(players);
+  const totalAssists = getTotalAssistencias(players);
+  const totalAmarelos = getTotalAmarelos(players);
+  const totalVermelhos = getTotalVermelhos(players);
+  const jogadoresAtivos = getJogadoresAtivos(players);
+  const maxJogos = getMaxJogos(players);
+  const artilheiro = getArtilheiro(players);
+  const garcom = getGarcom(players);
 
   const golsPerJogo = (totalGols / maxJogos).toFixed(1);
   const assistsPerJogo = (totalAssists / maxJogos).toFixed(1);
@@ -40,13 +60,11 @@ export default function Home() {
       <Sidebar />
 
       <main className="ml-60 flex-1 p-6">
-        {/* Breadcrumb */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
           <p className="text-sm text-muted">Home / Dashboard / Visão Geral</p>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatsCard
             title="Total de Gols"
@@ -90,17 +108,16 @@ export default function Home() {
           />
         </div>
 
-        {/* Rankings + Team Overview */}
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
           <TopRankingCard
             title="Top Artilheiros"
-            players={getTopScorers(5)}
+            players={getTopScorers(players, 5)}
             valueKey="gols"
             valueSuffix="gols"
           />
           <TopRankingCard
             title="Top Assistências"
-            players={getTopAssisters(5)}
+            players={getTopAssisters(players, 5)}
             valueKey="assistencias"
             valueSuffix="assist"
           />
@@ -111,12 +128,10 @@ export default function Home() {
           />
         </div>
 
-        {/* Player Stats Table */}
         <div className="mt-6">
-          <PlayerStatsTable players={getAllPlayersSorted()} />
+          <PlayerStatsTable players={getAllPlayersSorted(players)} />
         </div>
 
-        {/* Performance + Goals Report */}
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <PerformanceGoalChart
