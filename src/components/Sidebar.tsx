@@ -10,7 +10,6 @@ import {
   ChevronDown,
   ChevronUp,
   Settings,
-  User,
   Menu,
   X,
 } from "lucide-react";
@@ -136,21 +135,32 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Botão mobile - só aparece em telas < lg */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed left-4 top-4 z-50 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-sidebar-bg text-white shadow-lg lg:hidden"
-      >
-        <Menu className="h-5 w-5" />
-      </button>
+      {/* Header mobile com fundo - só aparece em telas < lg */}
+      <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-card-border bg-card-bg px-4 shadow-sm lg:hidden">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-bg text-xs font-bold text-white">
+            IL
+          </div>
+          <span className="text-sm font-semibold text-foreground">
+            Inter de Litrão
+          </span>
+        </div>
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-foreground hover:bg-background"
+          aria-label="Abrir menu"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+      </header>
 
       {/* Overlay mobile */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+          mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={() => setMobileOpen(false)}
+      />
 
       {/* Sidebar mobile (drawer) */}
       <aside

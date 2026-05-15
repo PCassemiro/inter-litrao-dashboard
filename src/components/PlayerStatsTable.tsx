@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, X } from "lucide-react";
+import {
+  Search,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  ChevronLeft,
+  ChevronRight,
+  X,
+} from "lucide-react";
 import type { Player } from "@/src/constants/mockData";
 
 type SortKey = "nome" | "jogos" | "gols" | "assistencias" | "ga" | "cartoes";
@@ -33,6 +41,30 @@ const avatarColors: Record<string, string> = {
 function getAvatarColor(name: string) {
   const initial = name.charAt(0);
   return avatarColors[initial] ?? "bg-gray-100 text-gray-700";
+}
+
+function getPageNumbers(current: number, total: number): (number | "...")[] {
+  if (total <= 5) return Array.from({ length: total }, (_, i) => i);
+
+  const pages: (number | "...")[] = [0];
+
+  let start = Math.max(1, current - 1);
+  let end = Math.min(total - 2, current + 1);
+
+  if (current <= 2) {
+    start = 1;
+    end = 3;
+  } else if (current >= total - 3) {
+    start = total - 4;
+    end = total - 2;
+  }
+
+  if (start > 1) pages.push("...");
+  for (let i = start; i <= end; i++) pages.push(i);
+  if (end < total - 2) pages.push("...");
+
+  pages.push(total - 1);
+  return pages;
 }
 
 type PlayerStatsTableProps = {
@@ -120,17 +152,17 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
   const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
   const paginated = filtered.slice(page * perPage, (page + 1) * perPage);
 
-  const headers: { key: SortKey; label: string }[] = [
+  const headers: { key: SortKey; label: string; hideOnMobile?: boolean }[] = [
     { key: "nome", label: "Jogador" },
-    { key: "jogos", label: "Jogos" },
+    { key: "jogos", label: "Jogos", hideOnMobile: true },
     { key: "gols", label: "Gols" },
     { key: "assistencias", label: "Assist" },
     { key: "ga", label: "G+A" },
-    { key: "cartoes", label: "Cartões" },
+    { key: "cartoes", label: "Cartões", hideOnMobile: true },
   ];
 
   return (
-    <div className="rounded-xl border border-card-border bg-card-bg p-5 shadow-sm">
+    <div className="rounded-xl border border-card-border bg-card-bg p-3 shadow-sm sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-base font-semibold text-foreground">
@@ -156,7 +188,10 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
               type="text"
               placeholder="Buscar jogador..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(0);
+              }}
               className="h-9 w-full rounded-lg border border-card-border bg-background pl-9 pr-3 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 focus:ring-accent-blue/30 sm:w-56"
             />
           </div>
@@ -167,25 +202,29 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-card-border">
-              <th className="w-10 pb-3 text-left text-xs font-medium text-muted">
+              <th className="hidden w-10 pb-3 text-left text-xs font-medium text-muted sm:table-cell">
                 #
               </th>
               {headers.map((h) => {
                 const isActive = sortKey === h.key && sortDir !== null;
                 const SortIcon = isActive
-                  ? sortDir === "asc" ? ArrowUp : ArrowDown
+                  ? sortDir === "asc"
+                    ? ArrowUp
+                    : ArrowDown
                   : ArrowUpDown;
                 return (
                   <th
                     key={h.key}
-                    className="pb-3 text-left text-xs font-medium text-muted"
+                    className={`pb-3 text-left text-xs font-medium text-muted ${h.hideOnMobile ? "hidden sm:table-cell" : ""}`}
                   >
                     <button
                       onClick={() => handleSort(h.key)}
                       className={`inline-flex items-center gap-1 transition-colors hover:text-foreground ${isActive ? "text-accent-blue" : ""}`}
                     >
                       {h.label}
-                      <SortIcon className={`h-3 w-3 ${isActive ? "text-accent-blue" : ""}`} />
+                      <SortIcon
+                        className={`h-3 w-3 ${isActive ? "text-accent-blue" : ""}`}
+                      />
                     </button>
                   </th>
                 );
@@ -198,7 +237,9 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                 key={player.nome}
                 className="border-b border-card-border/50 last:border-0 hover:bg-background/60"
               >
-                <td className="py-3 text-xs text-muted">{page * perPage + index + 1}</td>
+                <td className="hidden py-3 text-xs text-muted sm:table-cell">
+                  {page * perPage + index + 1}
+                </td>
                 <td className="py-3">
                   <div className="flex items-center gap-3">
                     <div
@@ -214,7 +255,7 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                     </div>
                   </div>
                 </td>
-                <td className="py-3 tabular-nums text-foreground">
+                <td className="hidden py-3 tabular-nums text-foreground sm:table-cell">
                   {player.jogos}
                 </td>
                 <td className="py-3 tabular-nums font-medium text-foreground">
@@ -226,7 +267,7 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                 <td className="py-3 tabular-nums font-semibold text-foreground">
                   {player.gols + player.assistencias}
                 </td>
-                <td className="py-3">
+                <td className="hidden py-3 sm:table-cell">
                   <div className="flex items-center gap-1.5">
                     {player.cartoesAmarelos > 0 && (
                       <span className="inline-flex items-center gap-0.5 text-xs">
@@ -257,9 +298,11 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
       </div>
 
       {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-between border-t border-card-border pt-3">
+        <div className="mt-4 flex flex-col items-center gap-3 border-t border-card-border pt-3 sm:flex-row sm:justify-between">
           <p className="text-xs text-muted">
-            {page * perPage + 1}–{Math.min((page + 1) * perPage, filtered.length)} de {filtered.length}
+            {page * perPage + 1}–
+            {Math.min((page + 1) * perPage, filtered.length)} de{" "}
+            {filtered.length}
           </p>
           <div className="flex items-center gap-1">
             <button
@@ -269,19 +312,28 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i)}
-                className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-xs font-medium ${
-                  i === page
-                    ? "bg-accent-blue text-white"
-                    : "border border-card-border text-muted hover:bg-background/60"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {getPageNumbers(page, totalPages).map((item, idx) =>
+              item === "..." ? (
+                <span
+                  key={`ellipsis-${idx}`}
+                  className="inline-flex h-8 w-6 items-center justify-center text-xs text-muted"
+                >
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={item}
+                  onClick={() => setPage(item as number)}
+                  className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-xs font-medium ${
+                    item === page
+                      ? "bg-accent-blue text-white"
+                      : "border border-card-border text-muted hover:bg-background/60"
+                  }`}
+                >
+                  {(item as number) + 1}
+                </button>
+              ),
+            )}
             <button
               onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
               disabled={page === totalPages - 1}

@@ -37,7 +37,8 @@ export default async function Home() {
             Não foi possível carregar os dados
           </h2>
           <p className="mt-2 text-sm text-muted">
-            Verifique se a planilha está compartilhada como &quot;qualquer pessoa com o link&quot;.
+            Verifique se a planilha está compartilhada como &quot;qualquer
+            pessoa com o link&quot;.
           </p>
         </div>
       </div>
@@ -55,13 +56,15 @@ export default async function Home() {
 
   const golsPerJogo = (totalGols / maxJogos).toFixed(1);
   const assistsPerJogo = (totalAssists / maxJogos).toFixed(1);
-  const cartoesPerJogo = ((totalAmarelos + totalVermelhos) / maxJogos).toFixed(1);
+  const cartoesPerJogo = ((totalAmarelos + totalVermelhos) / maxJogos).toFixed(
+    1,
+  );
 
   return (
     <div className="flex min-h-screen">
       <Sidebar />
 
-      <main className="ml-60 flex-1 p-6">
+      <main className="flex-1 p-4 pt-20 lg:ml-60 lg:p-6 lg:pt-6">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
           <p className="text-sm text-muted">Home / Dashboard / Visão Geral</p>
