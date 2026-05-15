@@ -30,8 +30,10 @@ export function GoalsReportChart({ data }: GoalsReportChartProps) {
     );
   }
 
+  const chartMinWidth = Math.max(data.length * 70, 320);
+
   return (
-    <div className="rounded-xl border border-card-border bg-card-bg p-5 shadow-sm">
+    <div className="rounded-xl border border-card-border bg-card-bg p-3 shadow-sm sm:p-5">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-base font-semibold text-foreground">
@@ -46,11 +48,12 @@ export function GoalsReportChart({ data }: GoalsReportChartProps) {
         </span>
       </div>
 
-      <div className="mt-4">
-        <ResponsiveContainer width="100%" height={260}>
+      <div className="mt-4 -mx-3 overflow-x-auto sm:mx-0">
+        <div style={{ minWidth: chartMinWidth, height: 260 }}>
+        <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
-            margin={{ left: 0, right: 10, top: 10, bottom: 0 }}
+            margin={{ left: 10, right: 20, top: 10, bottom: 0 }}
           >
             <defs>
               <linearGradient id="colorGols" x1="0" y1="0" x2="0" y2="1">
@@ -98,6 +101,7 @@ export function GoalsReportChart({ data }: GoalsReportChartProps) {
             />
           </AreaChart>
         </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );

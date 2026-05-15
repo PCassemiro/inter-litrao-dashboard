@@ -136,7 +136,7 @@ export function Sidebar() {
   return (
     <>
       {/* Header mobile com fundo - só aparece em telas < lg */}
-      <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-card-border bg-card-bg px-4 shadow-sm lg:hidden">
+      <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-card-border bg-card-bg/95 px-4 shadow-sm backdrop-blur-md lg:hidden">
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-bg text-xs font-bold text-white">
             IL
@@ -154,13 +154,13 @@ export function Sidebar() {
         </button>
       </header>
 
-      {/* Overlay mobile */}
-      <div
-        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
-          mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-        onClick={() => setMobileOpen(false)}
-      />
+      {/* Overlay mobile - só renderiza quando aberto para não interferir no header */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
 
       {/* Sidebar mobile (drawer) */}
       <aside
