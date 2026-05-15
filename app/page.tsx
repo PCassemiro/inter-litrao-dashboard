@@ -1,6 +1,5 @@
 import { Goal, Handshake, Users, CreditCard } from "lucide-react";
-import { monthlyData } from "@/src/constants/mockData";
-import { fetchPlayersFromSheet } from "@/src/lib/sheets";
+import { fetchPlayersFromSheet, fetchMonthlyData } from "@/src/lib/sheets";
 import {
   getTopScorers,
   getTopAssisters,
@@ -25,7 +24,10 @@ import { GoalsReportChart } from "@/src/components/GoalsReportChart";
 export const revalidate = 60;
 
 export default async function Home() {
-  const players = await fetchPlayersFromSheet();
+  const [players, monthlyData] = await Promise.all([
+    fetchPlayersFromSheet(),
+    fetchMonthlyData(),
+  ]);
 
   if (players.length === 0) {
     return (

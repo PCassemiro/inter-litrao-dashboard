@@ -17,15 +17,26 @@ type GoalsReportChartProps = {
 };
 
 export function GoalsReportChart({ data }: GoalsReportChartProps) {
+  if (data.length === 0) {
+    return (
+      <div className="rounded-xl border border-card-border bg-card-bg p-5 shadow-sm">
+        <h3 className="text-base font-semibold text-foreground">Relatório de Gols</h3>
+        <div className="mt-8 flex items-center justify-center text-sm text-muted">
+          Nenhum dado mensal disponível ainda.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-xl border border-card-border bg-card-bg p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-base font-semibold text-foreground">Relatório de Gols</h3>
-          <p className="text-xs text-muted">Evolução de gols e assistências</p>
+          <p className="text-xs text-muted">Evolução de gols e assistências por mês</p>
         </div>
         <span className="rounded-lg border border-card-border px-3 py-1.5 text-xs font-medium text-muted">
-          Anual
+          2026
         </span>
       </div>
 

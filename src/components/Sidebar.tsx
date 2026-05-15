@@ -36,15 +36,13 @@ const navSections = [
   {
     title: "CONFIGURAÇÕES",
     defaultOpen: false,
-    items: [
-      { label: "Configurações", icon: Settings },
-    ],
+    items: [{ label: "Configurações", icon: Settings }],
   },
 ];
 
 export function Sidebar() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(
-    Object.fromEntries(navSections.map((s) => [s.title, s.defaultOpen]))
+    Object.fromEntries(navSections.map((s) => [s.title, s.defaultOpen])),
   );
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -54,7 +52,9 @@ export function Sidebar() {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   const toggle = (title: string) =>
@@ -68,7 +68,9 @@ export function Sidebar() {
             IL
           </div>
           <div>
-            <p className="text-sm font-semibold text-white leading-tight">Inter de Litrão</p>
+            <p className="text-sm font-semibold text-white leading-tight">
+              Inter de Litrão
+            </p>
             <p className="text-xs text-sidebar-text">2026</p>
           </div>
         </div>
@@ -118,7 +120,7 @@ export function Sidebar() {
         ))}
       </nav>
 
-      <div className="border-t border-white/10 px-4 py-4">
+      {/* <div className="border-t border-white/10 px-4 py-4">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-active text-xs font-medium text-white">
             <User className="h-4 w-4" />
@@ -128,7 +130,7 @@ export function Sidebar() {
             <p className="text-xs text-sidebar-text/60">admin@interdelitrao.com</p>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 

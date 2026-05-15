@@ -1,7 +1,22 @@
-import type { Player } from "@/src/constants/mockData";
+import type { Player, MonthlyData } from "@/src/constants/mockData";
 
 const SPREADSHEET_ID = "1pgDIpFuCyutk6R2XA8mbl3WNC8uvE2kjSR7qo-5M400";
 const SHEET_NAME = "geral";
+
+const MONTH_SHEETS = [
+  { sheet: "janeiro", label: "Jan" },
+  { sheet: "fevereiro", label: "Fev" },
+  { sheet: "março", label: "Mar" },
+  { sheet: "abril", label: "Abr" },
+  { sheet: "maio", label: "Mai" },
+  { sheet: "junho", label: "Jun" },
+  { sheet: "julho", label: "Jul" },
+  { sheet: "agosto", label: "Ago" },
+  { sheet: "setembro", label: "Set" },
+  { sheet: "outubro", label: "Out" },
+  { sheet: "novembro", label: "Nov" },
+  { sheet: "dezembro", label: "Dez" },
+];
 
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
 
@@ -89,4 +104,63 @@ export async function fetchPlayersFromSheet(): Promise<Player[]> {
       cartoesAmarelos: parseIntSafe(row[caIdx]),
       cartoesVermelhos: parseIntSafe(row[cvIdx]),
     }));
+}
+
+function buildSheetURL(sheetName: string): string {
+  return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+}
+
+async function fetchMonthTotals(
+  sheetName: string,
+): Promise<{ gols: number; assistencias: number } | null> {
+  try {
+    const response = await fetch(buildSheetURL(sheetName), {
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) return null;
+
+    const text = await response.text();
+    const rows = parseCSV(text);
+
+    if (rows.length < 2) return null;
+
+    const headers = rows[0];
+    const golsIdx = findColumn(headers, "gols");
+    const assistIdx = findColumn(headers, "assist");
+
+    if (golsIdx === -1) return null;
+
+    let totalGols = 0;
+    let totalAssist = 0;
+
+    for (const row of rows.slice(1)) {
+      if (cleanCell(row[0]).length === 0 && cleanCell(row[1]).length === 0) continue;
+      totalGols += parseIntSafe(row[golsIdx]);
+      totalAssist += parseIntSafe(row[assistIdx]);
+    }
+
+    return { gols: totalGols, assistencias: totalAssist };
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchMonthlyData(): Promise<MonthlyData[]> {
+  const results: MonthlyData[] = [];
+
+  for (const { sheet, label } of MONTH_SHEETS) {
+    const totals = await fetchMonthTotals(sheet);
+
+    if (totals === null) break;
+    if (totals.gols === 0 && totals.assistencias === 0) break;
+
+    results.push({
+      mes: label,
+      gols: totals.gols,
+      assistencias: totals.assistencias,
+    });
+  }
+
+  return results;
 }
