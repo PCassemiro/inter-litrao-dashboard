@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { Player } from "@/src/constants/mockData";
 
 type SortKey = "nome" | "jogos" | "gols" | "assistencias" | "ga" | "cartoes";
-type SortDir = "asc" | "desc";
+type SortDir = "asc" | "desc" | null;
 
 const avatarColors: Record<string, string> = {
   A: "bg-rose-100 text-rose-700",
@@ -41,62 +41,84 @@ type PlayerStatsTableProps = {
 
 export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
   const [search, setSearch] = useState("");
-  const [sortKey, setSortKey] = useState<SortKey>("ga");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDir, setSortDir] = useState<SortDir>(null);
+  const [page, setPage] = useState(0);
+  const perPage = 10;
+
+  const hasActiveSort = sortKey !== null && sortDir !== null;
 
   const handleSort = (key: SortKey) => {
+    setPage(0);
     if (sortKey === key) {
-      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+      if (sortDir === "asc") {
+        setSortDir("desc");
+      } else {
+        setSortKey(null);
+        setSortDir(null);
+      }
     } else {
       setSortKey(key);
-      setSortDir("desc");
+      setSortDir("asc");
     }
   };
 
+  const clearAllFilters = () => {
+    setSortKey(null);
+    setSortDir(null);
+    setSearch("");
+    setPage(0);
+  };
+
   const filtered = useMemo(() => {
-    let result = players.filter((p) =>
-      p.nome.toLowerCase().includes(search.toLowerCase())
+    const result = players.filter((p) =>
+      p.nome.toLowerCase().includes(search.toLowerCase()),
     );
 
-    result.sort((a, b) => {
-      let va: number | string, vb: number | string;
-      switch (sortKey) {
-        case "nome":
-          va = a.nome;
-          vb = b.nome;
-          return sortDir === "asc"
-            ? va.localeCompare(vb)
-            : vb.localeCompare(va);
-        case "jogos":
-          va = a.jogos;
-          vb = b.jogos;
-          break;
-        case "gols":
-          va = a.gols;
-          vb = b.gols;
-          break;
-        case "assistencias":
-          va = a.assistencias;
-          vb = b.assistencias;
-          break;
-        case "ga":
-          va = a.gols + a.assistencias;
-          vb = b.gols + b.assistencias;
-          break;
-        case "cartoes":
-          va = a.cartoesAmarelos + a.cartoesVermelhos;
-          vb = b.cartoesAmarelos + b.cartoesVermelhos;
-          break;
-        default:
-          return 0;
-      }
-      return sortDir === "asc"
-        ? (va as number) - (vb as number)
-        : (vb as number) - (va as number);
-    });
+    if (sortKey && sortDir) {
+      result.sort((a, b) => {
+        let va: number | string, vb: number | string;
+        switch (sortKey) {
+          case "nome":
+            va = a.nome;
+            vb = b.nome;
+            return sortDir === "asc"
+              ? va.localeCompare(vb)
+              : vb.localeCompare(va);
+          case "jogos":
+            va = a.jogos;
+            vb = b.jogos;
+            break;
+          case "gols":
+            va = a.gols;
+            vb = b.gols;
+            break;
+          case "assistencias":
+            va = a.assistencias;
+            vb = b.assistencias;
+            break;
+          case "ga":
+            va = a.gols + a.assistencias;
+            vb = b.gols + b.assistencias;
+            break;
+          case "cartoes":
+            va = a.cartoesAmarelos + a.cartoesVermelhos;
+            vb = b.cartoesAmarelos + b.cartoesVermelhos;
+            break;
+          default:
+            return 0;
+        }
+        return sortDir === "asc"
+          ? (va as number) - (vb as number)
+          : (vb as number) - (va as number);
+      });
+    }
 
     return result;
   }, [players, search, sortKey, sortDir]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
+  const paginated = filtered.slice(page * perPage, (page + 1) * perPage);
 
   const headers: { key: SortKey; label: string }[] = [
     { key: "nome", label: "Jogador" },
@@ -114,17 +136,30 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
           <h3 className="text-base font-semibold text-foreground">
             Estatísticas dos Jogadores
           </h3>
-          <p className="text-xs text-muted">{filtered.length} jogadores encontrados</p>
+          <p className="text-xs text-muted">
+            {filtered.length} jogadores encontrados
+          </p>
         </div>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-light" />
-          <input
-            type="text"
-            placeholder="Buscar jogador..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="h-9 w-full rounded-lg border border-card-border bg-background pl-9 pr-3 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 focus:ring-accent-blue/30 sm:w-56"
-          />
+        <div className="flex items-center gap-2">
+          {(hasActiveSort || search) && (
+            <button
+              onClick={clearAllFilters}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-accent-red/30 bg-accent-red/10 px-3 text-xs font-medium text-accent-red hover:bg-accent-red/20 transition-colors"
+            >
+              <X className="h-3.5 w-3.5" />
+              Limpar filtros
+            </button>
+          )}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-light" />
+            <input
+              type="text"
+              placeholder="Buscar jogador..."
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              className="h-9 w-full rounded-lg border border-card-border bg-background pl-9 pr-3 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 focus:ring-accent-blue/30 sm:w-56"
+            />
+          </div>
         </div>
       </div>
 
@@ -132,27 +167,38 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-card-border">
-              <th className="w-10 pb-3 text-left text-xs font-medium text-muted">#</th>
-              {headers.map((h) => (
-                <th key={h.key} className="pb-3 text-left text-xs font-medium text-muted">
-                  <button
-                    onClick={() => handleSort(h.key)}
-                    className="inline-flex items-center gap-1 hover:text-foreground"
+              <th className="w-10 pb-3 text-left text-xs font-medium text-muted">
+                #
+              </th>
+              {headers.map((h) => {
+                const isActive = sortKey === h.key && sortDir !== null;
+                const SortIcon = isActive
+                  ? sortDir === "asc" ? ArrowUp : ArrowDown
+                  : ArrowUpDown;
+                return (
+                  <th
+                    key={h.key}
+                    className="pb-3 text-left text-xs font-medium text-muted"
                   >
-                    {h.label}
-                    <ArrowUpDown className="h-3 w-3" />
-                  </button>
-                </th>
-              ))}
+                    <button
+                      onClick={() => handleSort(h.key)}
+                      className={`inline-flex items-center gap-1 transition-colors hover:text-foreground ${isActive ? "text-accent-blue" : ""}`}
+                    >
+                      {h.label}
+                      <SortIcon className={`h-3 w-3 ${isActive ? "text-accent-blue" : ""}`} />
+                    </button>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
-            {filtered.map((player, index) => (
+            {paginated.map((player, index) => (
               <tr
                 key={player.nome}
                 className="border-b border-card-border/50 last:border-0 hover:bg-background/60"
               >
-                <td className="py-3 text-xs text-muted">{index + 1}</td>
+                <td className="py-3 text-xs text-muted">{page * perPage + index + 1}</td>
                 <td className="py-3">
                   <div className="flex items-center gap-3">
                     <div
@@ -161,12 +207,16 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                       {player.nome.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-medium text-foreground">{player.nome}</p>
+                      <p className="font-medium text-foreground">
+                        {player.nome}
+                      </p>
                       <p className="text-xs text-muted">{player.posicao}</p>
                     </div>
                   </div>
                 </td>
-                <td className="py-3 tabular-nums text-foreground">{player.jogos}</td>
+                <td className="py-3 tabular-nums text-foreground">
+                  {player.jogos}
+                </td>
                 <td className="py-3 tabular-nums font-medium text-foreground">
                   {player.gols}
                 </td>
@@ -181,18 +231,23 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                     {player.cartoesAmarelos > 0 && (
                       <span className="inline-flex items-center gap-0.5 text-xs">
                         <span className="inline-block h-4 w-3 rounded-sm bg-accent-yellow" />
-                        <span className="text-muted">{player.cartoesAmarelos}</span>
+                        <span className="text-muted">
+                          {player.cartoesAmarelos}
+                        </span>
                       </span>
                     )}
                     {player.cartoesVermelhos > 0 && (
                       <span className="inline-flex items-center gap-0.5 text-xs">
                         <span className="inline-block h-4 w-3 rounded-sm bg-accent-red" />
-                        <span className="text-muted">{player.cartoesVermelhos}</span>
+                        <span className="text-muted">
+                          {player.cartoesVermelhos}
+                        </span>
                       </span>
                     )}
-                    {player.cartoesAmarelos === 0 && player.cartoesVermelhos === 0 && (
-                      <span className="text-xs text-muted-light">—</span>
-                    )}
+                    {player.cartoesAmarelos === 0 &&
+                      player.cartoesVermelhos === 0 && (
+                        <span className="text-xs text-muted-light">—</span>
+                      )}
                   </div>
                 </td>
               </tr>
@@ -200,6 +255,43 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between border-t border-card-border pt-3">
+          <p className="text-xs text-muted">
+            {page * perPage + 1}–{Math.min((page + 1) * perPage, filtered.length)} de {filtered.length}
+          </p>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-card-border text-muted hover:bg-background/60 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i)}
+                className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-xs font-medium ${
+                  i === page
+                    ? "bg-accent-blue text-white"
+                    : "border border-card-border text-muted hover:bg-background/60"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page === totalPages - 1}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-card-border text-muted hover:bg-background/60 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
