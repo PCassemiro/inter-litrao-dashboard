@@ -41,8 +41,8 @@ export function PerformanceGoalChart({
               dataKey="value"
               stroke="none"
             >
-              <Cell fill="#3b82f6" />
-              <Cell fill="#e2e8f0" />
+              <Cell fill="var(--accent-green)" />
+              <Cell fill="var(--card-border)" />
             </Pie>
           </PieChart>
         </ResponsiveContainer>

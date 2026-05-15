@@ -14,6 +14,7 @@ import {
   getGarcom,
 } from "@/src/hooks/usePlayerStats";
 import { Sidebar } from "@/src/components/Sidebar";
+import { ThemeToggle } from "@/src/components/ThemeToggle";
 import { StatsCard } from "@/src/components/StatsCard";
 import { TopRankingCard } from "@/src/components/TopRankingCard";
 import { TeamOverviewCard } from "@/src/components/TeamOverviewCard";
@@ -65,6 +66,10 @@ export default async function Home() {
       <Sidebar />
 
       <main className="flex-1 p-4 pt-20 lg:ml-60 lg:p-6 lg:pt-6">
+        <div className="hidden lg:fixed lg:right-6 lg:top-6 lg:z-30 lg:block">
+          <ThemeToggle />
+        </div>
+
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
           <p className="text-sm text-muted">Home / Dashboard / Visão Geral</p>

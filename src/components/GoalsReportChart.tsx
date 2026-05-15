@@ -70,11 +70,14 @@ export function GoalsReportChart({ data }: GoalsReportChartProps) {
             <YAxis tick={{ fontSize: 11 }} />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#ffffff",
-                border: "1px solid #e2e8f0",
+                backgroundColor: "var(--tooltip-bg)",
+                border: "1px solid var(--tooltip-border)",
                 borderRadius: 8,
                 fontSize: 12,
+                color: "var(--foreground)",
               }}
+              labelStyle={{ color: "var(--foreground)" }}
+              itemStyle={{ color: "var(--foreground)" }}
             />
             <Legend
               iconType="circle"

@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
+/* TEMA CLARO - Paleta verde sage */
 :root {
-  --background: #f8fafc;
+  --background: #ebebeb;
   --foreground: #0f172a;
   --card-bg: #ffffff;
-  --card-border: #e2e8f0;
-  --sidebar-bg: #312e81;
-  --sidebar-active: #4338ca;
-  --sidebar-text: #c7d2fe;
+  --card-border: #d4d4d4;
+  --sidebar-bg: #183729;
+  --sidebar-active: #3e564f;
+  --sidebar-text: #8ea588;
   --sidebar-text-active: #ffffff;
-  --muted: #64748b;
+  --muted: #475569;
   --muted-light: #94a3b8;
   --accent-blue: #3b82f6;
-  --accent-green: #10b981;
+  --accent-green: #8ea588;
   --accent-purple: #8b5cf6;
   --accent-orange: #f97316;
   --accent-yellow: #eab308;
@@ -20,6 +21,35 @@
   --gold: #f59e0b;
   --silver: #9ca3af;
   --bronze: #b45309;
+  --grid-line: #e2e2e2;
+  --tooltip-bg: #ffffff;
+  --tooltip-border: #d4d4d4;
+}
+
+/* TEMA ESCURO - Azul e preto */
+.dark {
+  --background: #050816;
+  --foreground: #e0e7ff;
+  --card-bg: #0f172a;
+  --card-border: #1e293b;
+  --sidebar-bg: #020617;
+  --sidebar-active: #1d4ed8;
+  --sidebar-text: #93c5fd;
+  --sidebar-text-active: #ffffff;
+  --muted: #94a3b8;
+  --muted-light: #64748b;
+  --accent-blue: #3b82f6;
+  --accent-green: #22d3ee;
+  --accent-purple: #818cf8;
+  --accent-orange: #fb923c;
+  --accent-yellow: #facc15;
+  --accent-red: #f87171;
+  --gold: #fbbf24;
+  --silver: #cbd5e1;
+  --bronze: #d97706;
+  --grid-line: #1e293b;
+  --tooltip-bg: #0f172a;
+  --tooltip-border: #1e40af;
 }
 
 @theme inline {
@@ -49,13 +79,16 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .recharts-cartesian-axis-tick-value {
-  fill: #64748b !important;
+  fill: var(--muted) !important;
   font-size: 11px;
 }
 
 .recharts-cartesian-grid line {
-  stroke: #e2e8f0;
+  stroke: var(--grid-line);
 }

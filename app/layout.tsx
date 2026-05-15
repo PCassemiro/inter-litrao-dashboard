@@ -17,6 +17,15 @@ export const metadata: Metadata = {
   description: "Dashboard de estatísticas do Inter de Litrão 2026",
 };
 
+const themeInitScript = `
+(function() {
+  try {
+    var t = localStorage.getItem('theme');
+    if (t === 'dark') document.documentElement.classList.add('dark');
+  } catch (_) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,8 +35,14 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full bg-background text-foreground">{children}</body>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-full bg-background text-foreground">
+        {children}
+      </body>
     </html>
   );
 }
