@@ -3,41 +3,50 @@
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
-  Target,
-  Handshake,
+  Trophy,
   Users,
-  CreditCard,
+  ChartBar,
   ChevronDown,
   ChevronUp,
-  Settings,
   Menu,
   X,
 } from "lucide-react";
 import { ThemeToggle } from "@/src/components/ThemeToggle";
 
-const navSections = [
+type NavItem = {
+  label: string;
+  icon: typeof LayoutDashboard;
+  href?: string;
+};
+
+type NavSection = {
+  title: string;
+  defaultOpen: boolean;
+  items: NavItem[];
+};
+
+const navSections: NavSection[] = [
   {
     title: "DASHBOARD",
     defaultOpen: true,
     items: [
-      { label: "Visão Geral", icon: LayoutDashboard, active: true },
-      { label: "Artilharia", icon: Target },
-      { label: "Assistências", icon: Handshake },
+      { label: "Início", icon: LayoutDashboard, href: "#inicio" },
+      { label: "Tops", icon: Trophy, href: "#tops" },
     ],
   },
   {
     title: "ESTATÍSTICAS",
     defaultOpen: true,
     items: [
-      { label: "Jogadores", icon: Users },
-      { label: "Cartões", icon: CreditCard },
+      { label: "Jogadores", icon: Users, href: "#jogadores" },
+      { label: "Gráficos", icon: ChartBar, href: "#graficos" },
     ],
   },
-  {
-    title: "CONFIGURAÇÕES",
-    defaultOpen: false,
-    items: [{ label: "Configurações", icon: Settings }],
-  },
+  // {
+  //   title: "CONFIGURAÇÕES",
+  //   defaultOpen: false,
+  //   items: [{ label: "Configurações", icon: Settings }],
+  // },
 ];
 
 export function Sidebar() {
@@ -45,6 +54,7 @@ export function Sidebar() {
     Object.fromEntries(navSections.map((s) => [s.title, s.defaultOpen])),
   );
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeHref, setActiveHref] = useState<string>("#inicio");
 
   useEffect(() => {
     if (mobileOpen) {
@@ -57,8 +67,49 @@ export function Sidebar() {
     };
   }, [mobileOpen]);
 
+  useEffect(() => {
+    const sectionIds = navSections
+      .flatMap((s) => s.items)
+      .map((i) => i.href)
+      .filter((h): h is string => Boolean(h))
+      .map((h) => h.slice(1));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) {
+          setActiveHref(`#${visible[0].target.id}`);
+        }
+      },
+      { rootMargin: "-30% 0px -60% 0px", threshold: [0, 0.25, 0.5, 1] },
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const toggle = (title: string) =>
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string | undefined,
+  ) => {
+    setMobileOpen(false);
+    if (!href) return;
+    e.preventDefault();
+    const id = href.slice(1);
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    setActiveHref(href);
+  };
 
   const sidebarContent = (
     <>
@@ -98,22 +149,25 @@ export function Sidebar() {
             </button>
             {openSections[section.title] && (
               <ul className="space-y-0.5">
-                {section.items.map((item) => (
-                  <li key={item.label}>
-                    <a
-                      href="#"
-                      onClick={() => setMobileOpen(false)}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                        item.active
-                          ? "bg-sidebar-active text-white font-medium"
-                          : "text-sidebar-text hover:bg-sidebar-active/40 hover:text-white"
-                      }`}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {item.label}
-                    </a>
-                  </li>
-                ))}
+                {section.items.map((item) => {
+                  const isActive = item.href === activeHref;
+                  return (
+                    <li key={item.label}>
+                      <a
+                        href={item.href ?? "#"}
+                        onClick={(e) => handleNavClick(e, item.href)}
+                        className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
+                          isActive
+                            ? "bg-sidebar-active text-white font-medium"
+                            : "text-sidebar-text hover:bg-sidebar-active/40 hover:text-white"
+                        }`}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -147,7 +201,7 @@ export function Sidebar() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          <ThemeToggle embedded />
           <button
             onClick={() => setMobileOpen(true)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-foreground hover:bg-background"

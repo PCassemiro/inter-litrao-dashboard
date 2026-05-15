@@ -5,7 +5,14 @@ import { Moon, Sun } from "lucide-react";
 
 type Theme = "light" | "dark";
 
-export function ThemeToggle({ className = "" }: { className?: string }) {
+export function ThemeToggle({
+  className = "",
+  embedded = false,
+}: {
+  className?: string;
+  /** Usar dentro de uma barra (menos “cartão flutuante”) */
+  embedded?: boolean;
+}) {
   const [theme, setTheme] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
@@ -29,9 +36,14 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
 
   return (
     <button
+      type="button"
       onClick={toggle}
       aria-label={`Mudar para tema ${theme === "light" ? "escuro" : "claro"}`}
-      className={`inline-flex h-10 w-10 items-center justify-center rounded-lg border border-card-border bg-card-bg text-foreground transition-colors hover:bg-background ${className}`}
+      className={
+        embedded
+          ? `inline-flex h-10 w-10 items-center justify-center rounded-lg bg-background text-foreground transition-colors hover:bg-card-border/40 ${className}`
+          : `inline-flex h-10 w-10 items-center justify-center rounded-lg border border-card-border bg-card-bg text-foreground transition-colors hover:bg-background ${className}`
+      }
     >
       {mounted && theme === "light" ? (
         <Moon className="h-5 w-5" />

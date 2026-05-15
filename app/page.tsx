@@ -66,16 +66,15 @@ export default async function Home() {
       <Sidebar />
 
       <main className="flex-1 p-4 pt-20 lg:ml-60 lg:p-6 lg:pt-6">
-        <div className="hidden lg:fixed lg:right-6 lg:top-6 lg:z-30 lg:block">
-          <ThemeToggle />
-        </div>
-
-        <div className="mb-6">
+        <div className="mb-6 flex items-center justify-between gap-4 rounded-xl border border-card-border bg-card-bg px-4 py-3 shadow-sm lg:px-5 lg:py-3.5">
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted">Home / Dashboard / Visão Geral</p>
+          {/* Desktop: tema na mesma barra do título (mobile usa o toggle do header fixo) */}
+          <div className="hidden lg:block">
+            <ThemeToggle embedded />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div id="inicio" className="scroll-mt-20 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 lg:scroll-mt-6">
           <StatsCard
             title="Total de Gols"
             value={String(totalGols)}
@@ -118,7 +117,7 @@ export default async function Home() {
           />
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div id="tops" className="scroll-mt-20 mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3 lg:scroll-mt-6">
           <TopRankingCard
             title="Top Artilheiros"
             players={getTopScorers(players, 5)}
@@ -138,11 +137,11 @@ export default async function Home() {
           />
         </div>
 
-        <div className="mt-6">
+        <div id="jogadores" className="scroll-mt-20 mt-6 lg:scroll-mt-6">
           <PlayerStatsTable players={getAllPlayersSorted(players)} />
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-5">
+        <div id="graficos" className="scroll-mt-20 mt-6 grid grid-cols-1 gap-4 lg:grid-cols-5 lg:scroll-mt-6">
           <div className="lg:col-span-2">
             <PerformanceGoalChart
               percentage={60}

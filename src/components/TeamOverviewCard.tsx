@@ -12,15 +12,30 @@ export function TeamOverviewCard({
   jogadoresAtivos,
 }: TeamOverviewCardProps) {
   const stats = [
-    { icon: Goal, label: "Total de Gols", value: totalGols, color: "text-accent-blue" },
-    { icon: Handshake, label: "Total de Assistências", value: totalAssists, color: "text-accent-green" },
-    { icon: Users, label: "Jogadores Ativos", value: jogadoresAtivos, color: "text-accent-purple" },
+    {
+      icon: Goal,
+      label: "Total de Gols",
+      value: totalGols,
+      color: "text-accent-blue",
+    },
+    {
+      icon: Handshake,
+      label: "Total de Assistências",
+      value: totalAssists,
+      color: "text-accent-green",
+    },
+    {
+      icon: Users,
+      label: "Jogadores Ativos",
+      value: jogadoresAtivos,
+      color: "text-accent-purple",
+    },
   ];
 
   return (
     <div className="rounded-xl border border-card-border bg-card-bg p-5 shadow-sm">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-semibold text-foreground">Visão Geral do Time</h3>
+        <h3 className="text-base font-semibold text-foreground">Visão Geral</h3>
       </div>
       <div className="mt-5 space-y-5">
         {stats.map((stat) => (

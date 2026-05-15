@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Search,
   ArrowUp,
@@ -43,19 +43,25 @@ function getAvatarColor(name: string) {
   return avatarColors[initial] ?? "bg-gray-100 text-gray-700";
 }
 
-function getPageNumbers(current: number, total: number): (number | "...")[] {
-  if (total <= 5) return Array.from({ length: total }, (_, i) => i);
+function getPageNumbers(
+  current: number,
+  total: number,
+  maxButtons: number,
+): (number | "...")[] {
+  if (total <= maxButtons) return Array.from({ length: total }, (_, i) => i);
 
   const pages: (number | "...")[] = [0];
+  const middleSize = maxButtons - 2;
+  const half = Math.floor(middleSize / 2);
 
-  let start = Math.max(1, current - 1);
-  let end = Math.min(total - 2, current + 1);
+  let start = Math.max(1, current - half);
+  let end = Math.min(total - 2, start + middleSize - 1);
 
-  if (current <= 2) {
+  if (current <= half + 1) {
     start = 1;
-    end = 3;
-  } else if (current >= total - 3) {
-    start = total - 4;
+    end = middleSize;
+  } else if (current >= total - half - 1) {
+    start = total - middleSize - 1;
     end = total - 2;
   }
 
@@ -65,6 +71,20 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
 
   pages.push(total - 1);
   return pages;
+}
+
+function useIsMobile(breakpoint = 640): boolean {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`);
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, [breakpoint]);
+
+  return isMobile;
 }
 
 type PlayerStatsTableProps = {
@@ -77,8 +97,19 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(0);
   const perPage = 10;
+  const isMobile = useIsMobile();
+  const maxPageButtons = isMobile ? 3 : 5;
 
   const hasActiveSort = sortKey !== null && sortDir !== null;
+
+  const goToPage = (next: number) => {
+    setPage(next);
+    requestAnimationFrame(() => {
+      document
+        .getElementById("jogadores")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
 
   const handleSort = (key: SortKey) => {
     setPage(0);
@@ -306,13 +337,14 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
           </p>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              type="button"
+              onClick={() => goToPage(Math.max(0, page - 1))}
               disabled={page === 0}
               className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-card-border text-muted hover:bg-background/60 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            {getPageNumbers(page, totalPages).map((item, idx) =>
+            {getPageNumbers(page, totalPages, maxPageButtons).map((item, idx) =>
               item === "..." ? (
                 <span
                   key={`ellipsis-${idx}`}
@@ -322,8 +354,9 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                 </span>
               ) : (
                 <button
+                  type="button"
                   key={item}
-                  onClick={() => setPage(item as number)}
+                  onClick={() => goToPage(item as number)}
                   className={`inline-flex h-8 w-8 items-center justify-center rounded-lg text-xs font-medium ${
                     item === page
                       ? "bg-accent-blue text-white"
@@ -335,7 +368,8 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
               ),
             )}
             <button
-              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              type="button"
+              onClick={() => goToPage(Math.min(totalPages - 1, page + 1))}
               disabled={page === totalPages - 1}
               className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-card-border text-muted hover:bg-background/60 disabled:opacity-40 disabled:cursor-not-allowed"
             >
