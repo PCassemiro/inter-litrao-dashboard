@@ -23,10 +23,10 @@ export function EvolutionChart({ data }: EvolutionChartProps) {
     return (
       <div className="rounded-xl border border-card-border bg-card-bg p-5 shadow-sm">
         <h3 className="text-base font-semibold text-foreground">
-          Evolucao Mensal
+          Evolução Mensal
         </h3>
         <div className="mt-8 flex items-center justify-center text-sm text-muted">
-          Nenhum dado mensal disponivel ainda.
+          Nenhum dado mensal disponível ainda.
         </div>
       </div>
     );
@@ -62,7 +62,7 @@ export function EvolutionChart({ data }: EvolutionChartProps) {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-base font-semibold text-foreground">
-            Evolucao Acumulada
+            Evolução Acumulada
           </h3>
           <p className="text-xs text-muted">
             Crescimento total ao longo do ano
@@ -70,7 +70,7 @@ export function EvolutionChart({ data }: EvolutionChartProps) {
         </div>
         <div className="flex items-center gap-1.5 rounded-lg border border-accent-green/30 bg-accent-green/10 px-2.5 py-1.5 text-xs font-medium text-accent-green">
           <TrendingUp className="h-3.5 w-3.5" />
-          +{growth}% ultimo mes
+          +{growth}% último mês
         </div>
       </div>
 
@@ -112,7 +112,7 @@ export function EvolutionChart({ data }: EvolutionChartProps) {
               <Line
                 type="monotone"
                 dataKey="assistsAcumuladas"
-                name="Assists Acumuladas"
+                name="Assistências Acumuladas"
                 stroke="#10b981"
                 strokeWidth={2}
                 dot={{ fill: "#10b981", strokeWidth: 0, r: 4 }}

@@ -45,10 +45,10 @@ export default async function Home() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="rounded-xl border border-card-border bg-card-bg p-8 text-center shadow-sm">
           <h2 className="text-lg font-semibold text-foreground">
-            Nao foi possivel carregar os dados
+            Não foi possível carregar os dados
           </h2>
           <p className="mt-2 text-sm text-muted">
-            Verifique se a planilha esta compartilhada como &quot;qualquer
+            Verifique se a planilha está compartilhada como &quot;qualquer
             pessoa com o link&quot;.
           </p>
         </div>
@@ -115,10 +115,10 @@ export default async function Home() {
             icon={<Goal className="h-5 w-5" />}
             bars={golsBars}
             barColor="#3b82f6"
-            tooltip="Variacao em relacao ao mes anterior"
+            tooltip="Variação em relação ao mês anterior"
           />
           <StatsCard
-            title="Total de Assistencias"
+            title="Total de Assistências"
             value={String(totalAssists)}
             trend={assistsTrend.percentage}
             trendUp={assistsTrend.isUp}
@@ -126,7 +126,7 @@ export default async function Home() {
             icon={<Handshake className="h-5 w-5" />}
             bars={assistsBars}
             barColor="#10b981"
-            tooltip="Variacao em relacao ao mes anterior"
+            tooltip="Variação em relação ao mês anterior"
           />
           <StatsCard
             title="Jogos Disputados"
@@ -137,18 +137,18 @@ export default async function Home() {
             icon={<Users className="h-5 w-5" />}
             bars={jogosBars}
             barColor="#8b5cf6"
-            tooltip="Comparado com media esperada de 4 jogos/mes"
+            tooltip="Comparado com média esperada de 4 jogos/mês"
           />
           <StatsCard
-            title="Cartoes"
+            title="Cartões"
             value={cardsTrend.value}
             trend={cardsTrend.percentage}
             trendUp={cardsTrend.isUp}
-            subtitle={`${cartoesPerJogo} cartoes/jogo`}
+            subtitle={`${cartoesPerJogo} cartões/jogo`}
             icon={<CreditCard className="h-5 w-5" />}
             bars={cardsBars}
             barColor="#f97316"
-            tooltip="Menos cartoes que o esperado e positivo"
+            tooltip="Menos cartões que o esperado é positivo"
           />
         </div>
 
@@ -161,7 +161,7 @@ export default async function Home() {
             showMVP
           />
           <TopRankingCard
-            title="Top Assistencias"
+            title="Top Assistências"
             players={getTopAssisters(players, 5)}
             valueKey="assistencias"
             valueSuffix="assist"

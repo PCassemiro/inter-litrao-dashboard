@@ -101,7 +101,7 @@ export function PerformanceGoalChart({
             <Handshake className="h-4 w-4" />
           </div>
           <div className="flex-1">
-            <p className="text-xs text-muted">Garcom</p>
+            <p className="text-xs text-muted">Garçom</p>
             <p className="text-sm font-semibold text-foreground">{garcom.nome}</p>
           </div>
           <span className="text-sm font-semibold text-foreground tabular-nums">

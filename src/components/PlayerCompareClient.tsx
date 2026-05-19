@@ -88,7 +88,7 @@ export function PlayerCompareClient({ players }: PlayerCompareClientProps) {
         winner: player1.gols > player2.gols ? 1 : player2.gols > player1.gols ? 2 : 0,
       },
       {
-        label: "Assistencias",
+        label: "Assistências",
         value1: player1.assistencias,
         value2: player2.assistencias,
         winner: player1.assistencias > player2.assistencias ? 1 : player2.assistencias > player1.assistencias ? 2 : 0,
@@ -112,13 +112,13 @@ export function PlayerCompareClient({ players }: PlayerCompareClientProps) {
         winner: parseFloat(avg1.golsPerJogo) > parseFloat(avg2.golsPerJogo) ? 1 : parseFloat(avg2.golsPerJogo) > parseFloat(avg1.golsPerJogo) ? 2 : 0,
       },
       {
-        label: "Assists/Jogo",
+        label: "Assist./Jogo",
         value1: avg1.assistsPerJogo,
         value2: avg2.assistsPerJogo,
         winner: parseFloat(avg1.assistsPerJogo) > parseFloat(avg2.assistsPerJogo) ? 1 : parseFloat(avg2.assistsPerJogo) > parseFloat(avg1.assistsPerJogo) ? 2 : 0,
       },
       {
-        label: "Cartoes",
+        label: "Cartões",
         value1: player1.cartoesAmarelos + player1.cartoesVermelhos,
         value2: player2.cartoesAmarelos + player2.cartoesVermelhos,
         winner: (player1.cartoesAmarelos + player1.cartoesVermelhos) < (player2.cartoesAmarelos + player2.cartoesVermelhos) ? 1 : (player2.cartoesAmarelos + player2.cartoesVermelhos) < (player1.cartoesAmarelos + player1.cartoesVermelhos) ? 2 : 0,
@@ -349,7 +349,7 @@ export function PlayerCompareClient({ players }: PlayerCompareClientProps) {
         {(!player1 || !player2) && (
           <div className="mt-12 text-center text-muted">
             <Users className="mx-auto h-12 w-12 text-muted-light/50" />
-            <p className="mt-4">Selecione dois jogadores para comparar suas estatisticas</p>
+            <p className="mt-4">Selecione dois jogadores para comparar suas estatísticas</p>
           </div>
         )}
       </div>

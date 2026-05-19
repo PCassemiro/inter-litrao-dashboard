@@ -27,12 +27,12 @@ export default function Error({
         </h2>
         
         <p className="mt-2 text-sm text-muted">
-          Ocorreu um erro ao carregar o dashboard. Isso pode ser um problema temporario com a conexao ou com os dados.
+          Ocorreu um erro ao carregar o dashboard. Isso pode ser um problema temporário com a conexão ou com os dados.
         </p>
 
         {error.digest && (
           <p className="mt-2 text-xs text-muted-light font-mono">
-            Codigo: {error.digest}
+            Código: {error.digest}
           </p>
         )}
 
@@ -49,7 +49,7 @@ export default function Error({
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-card-border bg-background px-4 py-2.5 text-sm font-medium text-foreground hover:bg-card-bg transition-colors"
           >
             <Home className="h-4 w-4" />
-            Voltar ao inicio
+            Voltar ao início
           </Link>
         </div>
       </div>

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props) {
   const decodedName = decodeURIComponent(nome);
   return {
     title: `${decodedName} - Inter de Litrao 2026`,
-    description: `Estatisticas de ${decodedName} no Inter de Litrao 2026`,
+    description: `Estatísticas de ${decodedName} no Inter de Litrao 2026`,
   };
 }
 
@@ -85,7 +85,7 @@ export default async function PlayerPage({ params }: Props) {
     },
     {
       icon: Handshake,
-      label: "Assistencias",
+      label: "Assistências",
       value: player.assistencias,
       average: `${averages.assistsPerJogo}/jogo`,
       rank: rankAssists,
@@ -96,14 +96,14 @@ export default async function PlayerPage({ params }: Props) {
       icon: Calendar,
       label: "Jogos",
       value: player.jogos,
-      average: `${((player.jogos / maxValues.maxJogos) * 100).toFixed(0)}% presenca`,
+      average: `${((player.jogos / maxValues.maxJogos) * 100).toFixed(0)}% presença`,
       rank: null,
       color: "text-accent-purple",
       bgColor: "bg-accent-purple/10",
     },
     {
       icon: TrendingUp,
-      label: "Participacoes (G+A)",
+      label: "Participações (G+A)",
       value: player.gols + player.assistencias,
       average: `${averages.participacoesPerJogo}/jogo`,
       rank: rankGA,
@@ -137,7 +137,7 @@ export default async function PlayerPage({ params }: Props) {
                 <span>{player.jogos} jogos disputados</span>
                 {rankGA <= 3 && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-gold/10 px-2 py-0.5 text-xs font-medium text-gold">
-                    Top {rankGA} em participacoes
+                    Top {rankGA} em participações
                   </span>
                 )}
               </div>
@@ -163,7 +163,7 @@ export default async function PlayerPage({ params }: Props) {
                 <div className="flex items-center gap-1 rounded-lg bg-accent-green/10 px-3 py-2">
                   <CreditCard className="h-4 w-4 text-accent-green" />
                   <span className="text-sm font-medium text-accent-green">
-                    Sem cartoes
+                    Sem cartões
                   </span>
                 </div>
               )}
@@ -204,8 +204,8 @@ export default async function PlayerPage({ params }: Props) {
 
         {/* Medias detalhadas */}
         <div className="mt-6 rounded-xl border border-card-border bg-card-bg p-5 shadow-sm">
-          <h3 className="text-base font-semibold text-foreground">Medias por Jogo</h3>
-          <p className="text-xs text-muted">Desempenho medio em {player.jogos} jogos</p>
+          <h3 className="text-base font-semibold text-foreground">Médias por Jogo</h3>
+          <p className="text-xs text-muted">Desempenho médio em {player.jogos} jogos</p>
           
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
             <div className="rounded-lg bg-background p-4">
@@ -214,7 +214,7 @@ export default async function PlayerPage({ params }: Props) {
             </div>
             <div className="rounded-lg bg-background p-4">
               <p className="text-2xl font-bold text-accent-green">{averages.assistsPerJogo}</p>
-              <p className="text-xs text-muted">Assists/Jogo</p>
+              <p className="text-xs text-muted">Assist./Jogo</p>
             </div>
             <div className="rounded-lg bg-background p-4">
               <p className="text-2xl font-bold text-gold">{averages.participacoesPerJogo}</p>
@@ -222,7 +222,7 @@ export default async function PlayerPage({ params }: Props) {
             </div>
             <div className="rounded-lg bg-background p-4">
               <p className="text-2xl font-bold text-accent-orange">{averages.cartoesPerJogo}</p>
-              <p className="text-xs text-muted">Cartoes/Jogo</p>
+              <p className="text-xs text-muted">Cartões/Jogo</p>
             </div>
           </div>
         </div>

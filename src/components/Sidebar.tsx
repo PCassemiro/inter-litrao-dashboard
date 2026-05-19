@@ -34,17 +34,27 @@ const navSections: NavSection[] = [
     title: "DASHBOARD",
     defaultOpen: true,
     items: [
-      { label: "Inicio", icon: LayoutDashboard, href: "/#inicio", isAnchor: true },
+      {
+        label: "Início",
+        icon: LayoutDashboard,
+        href: "/#inicio",
+        isAnchor: true,
+      },
       { label: "Tops", icon: Trophy, href: "/#tops", isAnchor: true },
     ],
   },
   {
-    title: "ESTATISTICAS",
+    title: "ESTATÍSTICAS",
     defaultOpen: true,
     items: [
       { label: "Jogadores", icon: Users, href: "/#jogadores", isAnchor: true },
-      { label: "Graficos", icon: ChartBar, href: "/#graficos", isAnchor: true },
-      { label: "Comparar", icon: GitCompare, href: "/comparar", isAnchor: false },
+      { label: "Gráficos", icon: ChartBar, href: "/#graficos", isAnchor: true },
+      {
+        label: "Comparar",
+        icon: GitCompare,
+        href: "/comparar",
+        isAnchor: false,
+      },
     ],
   },
 ];
@@ -108,7 +118,7 @@ export function Sidebar() {
     item: NavItem,
   ) => {
     setMobileOpen(false);
-    
+
     if (!item.isAnchor) {
       // Link normal, deixa o Next.js navegar
       return;
@@ -117,7 +127,7 @@ export function Sidebar() {
     // Anchor link
     e.preventDefault();
     const id = item.href.slice(2); // Remove "/#"
-    
+
     if (pathname !== "/") {
       // Se nao estiver na home, navega primeiro
       window.location.href = item.href;
@@ -146,7 +156,7 @@ export function Sidebar() {
           </div>
           <div>
             <p className="text-sm font-semibold text-white leading-tight">
-              Inter de Litrao
+              Inter de Litrão
             </p>
             <p className="text-xs text-sidebar-text">2026</p>
           </div>

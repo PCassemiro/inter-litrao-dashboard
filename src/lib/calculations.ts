@@ -191,7 +191,7 @@ export function getPlayerRadarData(player: Player, maxValues: {
       fullMark: 100 
     },
     { 
-      stat: "Assists", 
+      stat: "Assistências", 
       value: maxAssists > 0 ? Math.round((player.assistencias / maxAssists) * 100) : 0,
       fullMark: 100 
     },

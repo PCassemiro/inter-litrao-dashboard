@@ -31,11 +31,11 @@ export function TopParticipationsCard({ players }: TopParticipationsCardProps) {
       <div className="flex items-center gap-2">
         <Trophy className="h-5 w-5 text-gold" />
         <h3 className="text-base font-semibold text-foreground">
-          Top Participacoes (G+A)
+          Top Participações (G+A)
         </h3>
       </div>
       <p className="mt-1 text-xs text-muted">
-        Jogadores com mais contribuicoes para gols
+        Jogadores com mais contribuições para gols
       </p>
 
       <div className="mt-4 space-y-2">

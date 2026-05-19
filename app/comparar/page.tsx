@@ -5,7 +5,7 @@ export const revalidate = 60;
 
 export const metadata = {
   title: "Comparar Jogadores - Inter de Litrao 2026",
-  description: "Compare estatisticas de jogadores do Inter de Litrao 2026",
+  description: "Compare estatísticas de jogadores do Inter de Litrao 2026",
 };
 
 export default async function ComparePage() {

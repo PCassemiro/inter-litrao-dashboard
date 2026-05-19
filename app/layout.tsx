@@ -18,8 +18,8 @@ export const metadata: Metadata = {
     default: "Inter de Litrao 2026 - Dashboard",
     template: "%s | Inter de Litrao 2026",
   },
-  description: "Dashboard de estatisticas do Inter de Litrao 2026 - Acompanhe gols, assistencias e desempenho dos jogadores",
-  keywords: ["futebol", "estatisticas", "inter de litrao", "dashboard", "gols", "assistencias"],
+  description: "Dashboard de estatísticas do Inter de Litrao 2026 - Acompanhe gols, assistências e desempenho dos jogadores",
+  keywords: ["futebol", "estatísticas", "inter de litrao", "dashboard", "gols", "assistências"],
   authors: [{ name: "Inter de Litrao" }],
   openGraph: {
     type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     url: "https://inter-litrao-dashboard.vercel.app",
     siteName: "Inter de Litrao 2026",
     title: "Inter de Litrao 2026 - Dashboard",
-    description: "Dashboard de estatisticas do Inter de Litrao 2026",
+    description: "Dashboard de estatísticas do Inter de Litrao 2026",
     images: [
       {
         url: "/og-image.png",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Inter de Litrao 2026 - Dashboard",
-    description: "Dashboard de estatisticas do Inter de Litrao 2026",
+    description: "Dashboard de estatísticas do Inter de Litrao 2026",
     images: ["/og-image.png"],
   },
   robots: {

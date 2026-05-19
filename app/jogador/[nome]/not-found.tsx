@@ -10,11 +10,11 @@ export default function JogadorNotFound() {
         </div>
         
         <h2 className="mt-4 text-xl font-semibold text-foreground">
-          Jogador nao encontrado
+          Jogador não encontrado
         </h2>
         
         <p className="mt-2 text-sm text-muted">
-          O jogador que voce esta procurando nao existe no elenco ou o nome foi digitado incorretamente.
+          O jogador que você está procurando não existe no elenco ou o nome foi digitado incorretamente.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">

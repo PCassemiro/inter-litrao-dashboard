@@ -23,7 +23,7 @@ export function TeamOverviewCard({
     },
     {
       icon: Handshake,
-      label: "Total de Assistencias",
+      label: "Total de Assistências",
       value: totalAssists,
       color: "text-accent-green",
     },
@@ -43,7 +43,7 @@ export function TeamOverviewCard({
       className="rounded-xl border border-card-border bg-card-bg p-5 shadow-sm hover:shadow-md transition-shadow"
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-semibold text-foreground">Visao Geral</h3>
+        <h3 className="text-base font-semibold text-foreground">Visão Geral</h3>
       </div>
       <div className="mt-5 space-y-5">
         {stats.map((stat, index) => (

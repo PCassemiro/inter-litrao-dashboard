@@ -10,11 +10,11 @@ export default function NotFound() {
         </div>
         
         <h2 className="mt-4 text-xl font-semibold text-foreground">
-          Pagina nao encontrada
+          Página não encontrada
         </h2>
         
         <p className="mt-2 text-sm text-muted">
-          A pagina que voce esta procurando nao existe ou foi movida.
+          A página que você está procurando não existe ou foi movida.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
