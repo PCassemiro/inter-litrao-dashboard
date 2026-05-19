@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   LayoutDashboard,
   Trophy,
@@ -10,13 +12,15 @@ import {
   ChevronUp,
   Menu,
   X,
+  GitCompare,
 } from "lucide-react";
 import { ThemeToggle } from "@/src/components/ThemeToggle";
 
 type NavItem = {
   label: string;
   icon: typeof LayoutDashboard;
-  href?: string;
+  href: string;
+  isAnchor?: boolean;
 };
 
 type NavSection = {
@@ -30,31 +34,28 @@ const navSections: NavSection[] = [
     title: "DASHBOARD",
     defaultOpen: true,
     items: [
-      { label: "Início", icon: LayoutDashboard, href: "#inicio" },
-      { label: "Tops", icon: Trophy, href: "#tops" },
+      { label: "Inicio", icon: LayoutDashboard, href: "/#inicio", isAnchor: true },
+      { label: "Tops", icon: Trophy, href: "/#tops", isAnchor: true },
     ],
   },
   {
-    title: "ESTATÍSTICAS",
+    title: "ESTATISTICAS",
     defaultOpen: true,
     items: [
-      { label: "Jogadores", icon: Users, href: "#jogadores" },
-      { label: "Gráficos", icon: ChartBar, href: "#graficos" },
+      { label: "Jogadores", icon: Users, href: "/#jogadores", isAnchor: true },
+      { label: "Graficos", icon: ChartBar, href: "/#graficos", isAnchor: true },
+      { label: "Comparar", icon: GitCompare, href: "/comparar", isAnchor: false },
     ],
   },
-  // {
-  //   title: "CONFIGURAÇÕES",
-  //   defaultOpen: false,
-  //   items: [{ label: "Configurações", icon: Settings }],
-  // },
 ];
 
 export function Sidebar() {
+  const pathname = usePathname();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(
     Object.fromEntries(navSections.map((s) => [s.title, s.defaultOpen])),
   );
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeHref, setActiveHref] = useState<string>("#inicio");
+  const [activeHref, setActiveHref] = useState<string>("/#inicio");
 
   useEffect(() => {
     if (mobileOpen) {
@@ -68,11 +69,16 @@ export function Sidebar() {
   }, [mobileOpen]);
 
   useEffect(() => {
+    // Se nao estiver na home, nao observar sections
+    if (pathname !== "/") {
+      setActiveHref(pathname);
+      return;
+    }
+
     const sectionIds = navSections
       .flatMap((s) => s.items)
-      .map((i) => i.href)
-      .filter((h): h is string => Boolean(h))
-      .map((h) => h.slice(1));
+      .filter((i) => i.isAnchor && i.href.startsWith("/#"))
+      .map((h) => h.href.slice(2));
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -80,7 +86,7 @@ export function Sidebar() {
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]) {
-          setActiveHref(`#${visible[0].target.id}`);
+          setActiveHref(`/#${visible[0].target.id}`);
         }
       },
       { rootMargin: "-30% 0px -60% 0px", threshold: [0, 0.25, 0.5, 1] },
@@ -92,39 +98,59 @@ export function Sidebar() {
     });
 
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   const toggle = (title: string) =>
     setOpenSections((prev) => ({ ...prev, [title]: !prev[title] }));
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
-    href: string | undefined,
+    item: NavItem,
   ) => {
     setMobileOpen(false);
-    if (!href) return;
+    
+    if (!item.isAnchor) {
+      // Link normal, deixa o Next.js navegar
+      return;
+    }
+
+    // Anchor link
     e.preventDefault();
-    const id = href.slice(1);
+    const id = item.href.slice(2); // Remove "/#"
+    
+    if (pathname !== "/") {
+      // Se nao estiver na home, navega primeiro
+      window.location.href = item.href;
+      return;
+    }
+
     const el = document.getElementById(id);
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveHref(href);
+    setActiveHref(item.href);
+  };
+
+  const isActive = (item: NavItem) => {
+    if (item.isAnchor) {
+      return pathname === "/" && activeHref === item.href;
+    }
+    return pathname === item.href;
   };
 
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between px-5 py-6">
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sidebar-active font-bold text-white text-sm">
             IL
           </div>
           <div>
             <p className="text-sm font-semibold text-white leading-tight">
-              Inter de Litrão
+              Inter de Litrao
             </p>
             <p className="text-xs text-sidebar-text">2026</p>
           </div>
-        </div>
+        </Link>
         <button
           onClick={() => setMobileOpen(false)}
           className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-sidebar-text hover:bg-sidebar-active/40 hover:text-white lg:hidden"
@@ -150,21 +176,21 @@ export function Sidebar() {
             {openSections[section.title] && (
               <ul className="space-y-0.5">
                 {section.items.map((item) => {
-                  const isActive = item.href === activeHref;
+                  const active = isActive(item);
                   return (
                     <li key={item.label}>
-                      <a
-                        href={item.href ?? "#"}
-                        onClick={(e) => handleNavClick(e, item.href)}
+                      <Link
+                        href={item.href}
+                        onClick={(e) => handleNavClick(e, item)}
                         className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                          isActive
+                          active
                             ? "bg-sidebar-active text-white font-medium"
                             : "text-sidebar-text hover:bg-sidebar-active/40 hover:text-white"
                         }`}
                       >
                         <item.icon className="h-4 w-4" />
                         {item.label}
-                      </a>
+                      </Link>
                     </li>
                   );
                 })}
@@ -173,33 +199,21 @@ export function Sidebar() {
           </div>
         ))}
       </nav>
-
-      {/* <div className="border-t border-white/10 px-4 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sidebar-active text-xs font-medium text-white">
-            <User className="h-4 w-4" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-white">Admin</p>
-            <p className="text-xs text-sidebar-text/60">admin@interdelitrao.com</p>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 
   return (
     <>
-      {/* Header mobile com fundo - só aparece em telas < lg */}
+      {/* Header mobile com fundo - so aparece em telas < lg */}
       <header className="fixed left-0 right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-card-border bg-card-bg/95 px-4 shadow-sm backdrop-blur-md lg:hidden">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-bg text-xs font-bold text-white">
             IL
           </div>
           <span className="text-sm font-semibold text-foreground">
-            Inter de Litrão
+            Inter de Litrao
           </span>
-        </div>
+        </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle embedded />
           <button
@@ -212,7 +226,7 @@ export function Sidebar() {
         </div>
       </header>
 
-      {/* Overlay mobile - só renderiza quando aberto para não interferir no header */}
+      {/* Overlay mobile - so renderiza quando aberto para nao interferir no header */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
@@ -229,7 +243,7 @@ export function Sidebar() {
         {sidebarContent}
       </aside>
 
-      {/* Sidebar desktop - sempre visível em lg+ */}
+      {/* Sidebar desktop - sempre visivel em lg+ */}
       <aside className="fixed left-0 top-0 z-40 hidden h-full w-60 flex-col bg-sidebar-bg text-sidebar-text lg:flex">
         {sidebarContent}
       </aside>

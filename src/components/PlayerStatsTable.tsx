@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   ArrowUp,
@@ -9,6 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  ExternalLink,
 } from "lucide-react";
 import type { Player } from "@/src/constants/mockData";
 
@@ -189,30 +192,40 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
     { key: "gols", label: "Gols" },
     { key: "assistencias", label: "Assist" },
     { key: "ga", label: "G+A" },
-    { key: "cartoes", label: "Cartões", hideOnMobile: true },
+    { key: "cartoes", label: "Cartoes", hideOnMobile: true },
   ];
 
   return (
-    <div className="rounded-xl border border-card-border bg-card-bg p-3 shadow-sm sm:p-5">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.2 }}
+      className="rounded-xl border border-card-border bg-card-bg p-3 shadow-sm sm:p-5"
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h3 className="text-base font-semibold text-foreground">
-            Estatísticas dos Jogadores
+            Estatisticas dos Jogadores
           </h3>
           <p className="text-xs text-muted">
             {filtered.length} jogadores encontrados
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {(hasActiveSort || search) && (
-            <button
-              onClick={clearAllFilters}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-accent-red/30 bg-accent-red/10 px-3 text-xs font-medium text-accent-red hover:bg-accent-red/20 transition-colors"
-            >
-              <X className="h-3.5 w-3.5" />
-              Limpar filtros
-            </button>
-          )}
+          <AnimatePresence>
+            {(hasActiveSort || search) && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                onClick={clearAllFilters}
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-accent-red/30 bg-accent-red/10 px-3 text-xs font-medium text-accent-red hover:bg-accent-red/20 transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+                Limpar filtros
+              </motion.button>
+            )}
+          </AnimatePresence>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-light" />
             <input
@@ -260,70 +273,88 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
                   </th>
                 );
               })}
+              <th className="pb-3 text-left text-xs font-medium text-muted w-10">
+                <span className="sr-only">Acoes</span>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {paginated.map((player, index) => (
-              <tr
-                key={player.nome}
-                className="border-b border-card-border/50 last:border-0 hover:bg-background/60"
-              >
-                <td className="hidden py-3 text-xs text-muted sm:table-cell">
-                  {page * perPage + index + 1}
-                </td>
-                <td className="py-3">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${getAvatarColor(player.nome)}`}
-                    >
-                      {player.nome.charAt(0)}
+            <AnimatePresence mode="popLayout">
+              {paginated.map((player, index) => (
+                <motion.tr
+                  key={player.nome}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2, delay: index * 0.03 }}
+                  className="border-b border-card-border/50 last:border-0 hover:bg-background/60 group"
+                >
+                  <td className="hidden py-3 text-xs text-muted sm:table-cell">
+                    {page * perPage + index + 1}
+                  </td>
+                  <td className="py-3">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${getAvatarColor(player.nome)}`}
+                      >
+                        {player.nome.charAt(0)}
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">
+                          {player.nome}
+                        </p>
+                        <p className="text-xs text-muted">{player.jogos} jogos</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {player.nome}
-                      </p>
-                      <p className="text-xs text-muted">{player.jogos} jogos</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="hidden py-3 tabular-nums text-foreground sm:table-cell">
-                  {player.jogos}
-                </td>
-                <td className="py-3 tabular-nums font-medium text-foreground">
-                  {player.gols}
-                </td>
-                <td className="py-3 tabular-nums text-foreground">
-                  {player.assistencias}
-                </td>
-                <td className="py-3 tabular-nums font-semibold text-foreground">
-                  {player.gols + player.assistencias}
-                </td>
-                <td className="hidden py-3 sm:table-cell">
-                  <div className="flex items-center gap-1.5">
-                    {player.cartoesAmarelos > 0 && (
-                      <span className="inline-flex items-center gap-0.5 text-xs">
-                        <span className="inline-block h-4 w-3 rounded-sm bg-accent-yellow" />
-                        <span className="text-muted">
-                          {player.cartoesAmarelos}
+                  </td>
+                  <td className="hidden py-3 tabular-nums text-foreground sm:table-cell">
+                    {player.jogos}
+                  </td>
+                  <td className="py-3 tabular-nums font-medium text-foreground">
+                    {player.gols}
+                  </td>
+                  <td className="py-3 tabular-nums text-foreground">
+                    {player.assistencias}
+                  </td>
+                  <td className="py-3 tabular-nums font-semibold text-foreground">
+                    {player.gols + player.assistencias}
+                  </td>
+                  <td className="hidden py-3 sm:table-cell">
+                    <div className="flex items-center gap-1.5">
+                      {player.cartoesAmarelos > 0 && (
+                        <span className="inline-flex items-center gap-0.5 text-xs">
+                          <span className="inline-block h-4 w-3 rounded-sm bg-accent-yellow" />
+                          <span className="text-muted">
+                            {player.cartoesAmarelos}
+                          </span>
                         </span>
-                      </span>
-                    )}
-                    {player.cartoesVermelhos > 0 && (
-                      <span className="inline-flex items-center gap-0.5 text-xs">
-                        <span className="inline-block h-4 w-3 rounded-sm bg-accent-red" />
-                        <span className="text-muted">
-                          {player.cartoesVermelhos}
-                        </span>
-                      </span>
-                    )}
-                    {player.cartoesAmarelos === 0 &&
-                      player.cartoesVermelhos === 0 && (
-                        <span className="text-xs text-muted-light">—</span>
                       )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {player.cartoesVermelhos > 0 && (
+                        <span className="inline-flex items-center gap-0.5 text-xs">
+                          <span className="inline-block h-4 w-3 rounded-sm bg-accent-red" />
+                          <span className="text-muted">
+                            {player.cartoesVermelhos}
+                          </span>
+                        </span>
+                      )}
+                      {player.cartoesAmarelos === 0 &&
+                        player.cartoesVermelhos === 0 && (
+                          <span className="text-xs text-muted-light">-</span>
+                        )}
+                    </div>
+                  </td>
+                  <td className="py-3">
+                    <Link
+                      href={`/jogador/${encodeURIComponent(player.nome)}`}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted opacity-0 group-hover:opacity-100 hover:bg-background hover:text-foreground transition-all"
+                      title={`Ver detalhes de ${player.nome}`}
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Link>
+                  </td>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
           </tbody>
         </table>
       </div>
@@ -331,7 +362,7 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
       {totalPages > 1 && (
         <div className="mt-4 flex flex-col items-center gap-3 border-t border-card-border pt-3 sm:flex-row sm:justify-between">
           <p className="text-xs text-muted">
-            {page * perPage + 1}–
+            {page * perPage + 1}-
             {Math.min((page + 1) * perPage, filtered.length)} de{" "}
             {filtered.length}
           </p>
@@ -378,6 +409,6 @@ export function PlayerStatsTable({ players }: PlayerStatsTableProps) {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }
